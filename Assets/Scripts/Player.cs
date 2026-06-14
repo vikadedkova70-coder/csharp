@@ -2,6 +2,12 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    private Rigidbody2D rb;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
     private void Update()
     {
         Vector2 inputVector = new Vector2(0, 0);
@@ -26,6 +32,6 @@ public class Player : MonoBehaviour
             inputVector.x = 1f;
         }
 
-        Debug.Log(inputVector);
+        rb.MovePosition(rb.position + inputVector);
     }
 }
