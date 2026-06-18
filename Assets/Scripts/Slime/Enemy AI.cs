@@ -17,13 +17,7 @@ public class EnemyAI : MonoBehaviour
 
     private enum State
     {
-        Idle,
         Roaning
-    }
-
-    private void Start()
-    {
-        startingPosition = transform.position;
     }
 
     private void Awake()
@@ -40,11 +34,9 @@ public class EnemyAI : MonoBehaviour
         switch (state)
         {
             default:
-            case State.Idle:
-                break;
             case State.Roaning:
                 roaningTime -= Time.deltaTime;
-                if (roaningTime <= 0)
+                if (roaningTime < 0)
                 {
                     Roaning();
                     roaningTime = roaningTimerMax;
@@ -56,12 +48,26 @@ public class EnemyAI : MonoBehaviour
 
     private void Roaning()
     {
+        startingPosition = transform.position;
         roanPosition = GetRoaningPosition();
+        ChangeFacingDirection(startingPosition, roanPosition);
         navMeshAgent.SetDestination(roanPosition);
     }
 
     private Vector3 GetRoaningPosition()
     {
         return startingPosition + Utils.GetRandomDir() * UnityEngine.Random.Range(roaningDistanceMin, roaningDistanceMax);
+    }
+
+    private void ChangeFacingDirection(Vector3 sourcePosition, Vector3 targetPosition)
+    {
+        if (sourcePosition.x > targetPosition.x)
+        {
+            transform.rotation = Quaternion.Euler(0, -180, 0);
+        }
+        else
+        {
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
     }
 }
