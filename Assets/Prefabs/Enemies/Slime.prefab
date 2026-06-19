@@ -211,6 +211,7 @@ GameObject:
   - component: {fileID: 5479608238083969144}
   - component: {fileID: 7048866797269656190}
   - component: {fileID: 2043843586609335919}
+  - component: {fileID: 2950078302493726140}
   m_Layer: 0
   m_Name: Slime
   m_TagString: Untagged
@@ -228,8 +229,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.12921, y: -0.04412, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 8.5, y: 8.5, z: 8.5}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 9032896638390650917}
   m_Father: {fileID: 0}
@@ -295,8 +296,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.14959015, y: 0.18781187}
-  m_Size: {x: 0.16224237, y: 0.09385921}
+  m_Offset: {x: -0.0016118246, y: 0.036495328}
+  m_Size: {x: 0.15694234, y: 0.08986865}
   m_Direction: 1
 --- !u!195 &7048866797269656190
 NavMeshAgent:
@@ -336,3 +337,16 @@ MonoBehaviour:
   roaningDistanceMax: 7
   roaningDistanceMin: 3
   roaningTimerMax: 2
+--- !u!114 &2950078302493726140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8647144940429300788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff2a074ec51a9f446949e0785bc29975, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHealth: 10
