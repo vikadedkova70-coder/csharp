@@ -4,59 +4,137 @@ using Adventure.Utils;
 
 public class EnemyAI : MonoBehaviour
 {
-    [SerializeField] private State startingState;
-    [SerializeField] private float roaningDistanceMax = 7f;
-    [SerializeField] private float roaningDistanceMin = 3f;
-    [SerializeField] private float roaningTimerMax = 2f;
+    [SerializeField] private State _startingState;
+    [SerializeField] private float _roaningDistanceMax = 7f;
+    [SerializeField] private float _roaningDistanceMin = 3f;
+    [SerializeField] private float _roaningTimerMax = 2f;
 
-    private NavMeshAgent navMeshAgent;
-    private State state;
-    private float roaningTime;
-    private Vector3 roanPosition;
-    private Vector3 startingPosition;
+    [SerializeField] private bool _isChasingEnemy = false;
+    private float _chasingDistance = 4f;
+    private float _chasingSpeedMultiplayer = 2f;
+
+
+    private NavMeshAgent _navMeshAgent;
+    private State _currentState;
+    private float _roaningTimer;
+    private Vector3 _roanPosition;
+    private Vector3 _startingPosition;
+
+    private float _roaningSpeed;
+    private float _chasingSpeed;
 
     private enum State
     {
-        Roaning
+        Idle,
+        Roaning,
+        Chasing,
+        Attacking,
+        Death
     }
 
     private void Awake()
     {
-        navMeshAgent = GetComponent<NavMeshAgent>();
-        navMeshAgent.updateRotation = false;
-        navMeshAgent.updateUpAxis = false;
+        _navMeshAgent = GetComponent<NavMeshAgent>();
+        _navMeshAgent.updateRotation = false;
+        _navMeshAgent.updateUpAxis = false;
 
-        state = startingState;
+        _currentState = _startingState;
+
+        _roaningSpeed = _navMeshAgent.speed;
+        _chasingSpeed = _navMeshAgent.speed * _chasingSpeedMultiplayer;
     }
 
     private void Update()
     {
-        switch (state)
+        StateHandler();
+    }
+
+    private void StateHandler()
+    {
+        switch (_currentState)
         {
-            default:
             case State.Roaning:
-                roaningTime -= Time.deltaTime;
-                if (roaningTime < 0)
+                _roaningTimer -= Time.deltaTime;
+                if (_roaningTimer < 0)
                 {
                     Roaning();
-                    roaningTime = roaningTimerMax;
+                    _roaningTimer = _roaningTimerMax;
                 }
                 break;
+
+            case State.Attacking:
+                break;
+            case State.Chasing:
+                ChasingTarget();
+                CheckCurrentState();
+                break;
+            case State.Death:
+                break;
+            default:
+            case State.Idle:
+                break;
+        }
+    }
+
+    private void ChasingTarget()
+    {
+        _navMeshAgent.SetDestination(Player.Instance.transform.position);
+    }
+
+    private void CheckCurrentState()
+    {
+        float distanceToPlayer = Vector3.Distance(transform.position, Player.Instance.transform.position);
+
+        State newState = State.Roaning;
+
+        if (_isChasingEnemy)
+        {
+            if (distanceToPlayer <= _chasingDistance)
+            {
+                newState = State.Chasing;
+            }
         }
 
+        if (newState != _currentState)
+        {
+            if (newState == State.Chasing)
+            {
+                _navMeshAgent.ResetPath();
+                _navMeshAgent.speed = _chasingSpeed;
+            }
+            else if (newState == State.Roaning)
+            {
+                _roaningTimer = 0f;
+                _navMeshAgent.speed = _roaningSpeed;
+            }
+
+                _currentState = newState;
+        }
+    }
+
+    public bool IsRunning()
+    {
+        if (_navMeshAgent.velocity == Vector3.zero)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     private void Roaning()
     {
-        startingPosition = transform.position;
-        roanPosition = GetRoaningPosition();
-        ChangeFacingDirection(startingPosition, roanPosition);
-        navMeshAgent.SetDestination(roanPosition);
+        _startingPosition = transform.position;
+        _roanPosition = GetRoaningPosition();
+        ChangeFacingDirection(_startingPosition, _roanPosition);
+        _navMeshAgent.SetDestination(_roanPosition);
     }
 
     private Vector3 GetRoaningPosition()
     {
-        return startingPosition + Utils.GetRandomDir() * UnityEngine.Random.Range(roaningDistanceMin, roaningDistanceMax);
+        return _startingPosition + Utils.GetRandomDir() * UnityEngine.Random.Range(_roaningDistanceMin, _roaningDistanceMax);
     }
 
     private void ChangeFacingDirection(Vector3 sourcePosition, Vector3 targetPosition)
