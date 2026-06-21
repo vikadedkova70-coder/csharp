@@ -6,7 +6,7 @@ public class GameInput : MonoBehaviour
 {
     public static GameInput Instance { get; private set; }
 
-    private PlayerInputActions playerInputActions;
+    private PlayerInputActions _playerInputActions;
 
     public event EventHandler OnPlayerAttack;
 
@@ -14,20 +14,15 @@ public class GameInput : MonoBehaviour
     {
         Instance = this;
 
-        playerInputActions = new PlayerInputActions();
-        playerInputActions.Enable();
+        _playerInputActions = new PlayerInputActions();
+        _playerInputActions.Enable();
 
-        playerInputActions.Combat.Attack.started += PlayerAttack_started;
-    }
-
-    private void PlayerAttack_started(InputAction.CallbackContext obj)
-    {
-        OnPlayerAttack.Invoke(this, EventArgs.Empty);
+        _playerInputActions.Combat.Attack.started += PlayerAttack_started;
     }
 
     public Vector2 GetMovementVector()
     {
-        Vector2 inputVector = playerInputActions.Player.Move.ReadValue<Vector2>();
+        Vector2 inputVector = _playerInputActions.Player.Move.ReadValue<Vector2>();
 
         return inputVector;
     }
@@ -36,5 +31,15 @@ public class GameInput : MonoBehaviour
     {
         Vector3 mousePos = Mouse.current.position.ReadValue();
         return mousePos;
+    }
+
+    public void DisableMovement()
+    {
+        _playerInputActions.Disable();
+    }
+
+    private void PlayerAttack_started(InputAction.CallbackContext obj)
+    {
+        OnPlayerAttack.Invoke(this, EventArgs.Empty);
     }
 }

@@ -13,7 +13,10 @@ public class ActiveWeapon : MonoBehaviour
 
     private void Update()
     {
-        FollerMousePosition();
+        if (Player.Instance.IsAlive())
+        {
+            FollerMousePosition();
+        }
     }
 
     public Sword GetActiveWeapon()

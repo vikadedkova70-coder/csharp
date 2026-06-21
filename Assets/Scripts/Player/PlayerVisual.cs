@@ -3,10 +3,10 @@ using UnityEngine;
 public class PlayerVisual : MonoBehaviour
 {
     private Animator animator;
-
     private SpriteRenderer spriteRenderer;
 
     private const string IS_RUNNING = "IsRunning";
+    private const string IS_DEATH = "IsDeath";
 
     private void Awake()
     {
@@ -14,10 +14,23 @@ public class PlayerVisual : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    private void Start()
+    {
+        Player.Instance.OnPlayerDeath += Player_OnPlayerDeath;
+    }
+
+    private void Player_OnPlayerDeath(object sender, System.EventArgs e)
+    {
+        animator.SetBool(IS_DEATH, true);
+    }
+
     private void Update()
     {
         animator.SetBool("IsRunning", Player.Instance.IsRunning());
-        AdjustPlayerFacingDirection();
+        if (Player.Instance.IsAlive())
+        {
+            AdjustPlayerFacingDirection();
+        }
     }
 
     private void AdjustPlayerFacingDirection()
