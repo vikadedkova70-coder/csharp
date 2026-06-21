@@ -1036,6 +1036,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Skeleton
       objectReference: {fileID: 0}
+    - target: {fileID: 2130269690583160449, guid: 1991b530279cbcb4b83e9245b9f00740, type: 3}
+      propertyPath: _enemySO
+      value: 
+      objectReference: {fileID: 11400000, guid: 89aa4ae9a6401254889121f09452c1af, type: 2}
     - target: {fileID: 3653569372962261041, guid: 1991b530279cbcb4b83e9245b9f00740, type: 3}
       propertyPath: m_Speed
       value: 1.5

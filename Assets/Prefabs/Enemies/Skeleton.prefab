@@ -438,3 +438,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _enemyAI: {fileID: 6279075278915819322}
   _enemyEntity: {fileID: 2130269690583160449}
+  _shadow: {fileID: 341457138169196510}
