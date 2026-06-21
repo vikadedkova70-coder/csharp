@@ -1,6 +1,7 @@
+using Adventure.Utils;
+using System;
 using UnityEngine;
 using UnityEngine.AI;
-using Adventure.Utils;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -10,8 +11,13 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float _roaningTimerMax = 2f;
 
     [SerializeField] private bool _isChasingEnemy = false;
-    private float _chasingDistance = 4f;
-    private float _chasingSpeedMultiplayer = 2f;
+    [SerializeField] private float _chasingDistance = 4f;
+    [SerializeField] private float _chasingSpeedMultiplier = 2f;
+
+    [SerializeField] private bool _isAttackingEnemy = false;
+    [SerializeField] private float _attackingDistance = 2f;
+    [SerializeField] private float _attackRate = 2f;
+    private float _nextAttackTime = 0f;
 
 
     private NavMeshAgent _navMeshAgent;
@@ -22,6 +28,12 @@ public class EnemyAI : MonoBehaviour
 
     private float _roaningSpeed;
     private float _chasingSpeed;
+
+    private float _nextCheckDirectionTime = 0f;
+    private float _checkDirectionDuration = 0.1f;
+    private Vector3 _lastPosition;
+
+    public event EventHandler OnEnemyAttack;
 
     private enum State
     {
@@ -41,12 +53,13 @@ public class EnemyAI : MonoBehaviour
         _currentState = _startingState;
 
         _roaningSpeed = _navMeshAgent.speed;
-        _chasingSpeed = _navMeshAgent.speed * _chasingSpeedMultiplayer;
+        _chasingSpeed = _navMeshAgent.speed * _chasingSpeedMultiplier;
     }
 
     private void Update()
     {
         StateHandler();
+        MovementDirectionHandler();
     }
 
     private void StateHandler()
@@ -63,6 +76,8 @@ public class EnemyAI : MonoBehaviour
                 break;
 
             case State.Attacking:
+                AttackingTarget();
+                CheckCurrentState();
                 break;
             case State.Chasing:
                 ChasingTarget();
@@ -81,6 +96,11 @@ public class EnemyAI : MonoBehaviour
         _navMeshAgent.SetDestination(Player.Instance.transform.position);
     }
 
+    public float GetRoaningAnimationSpeed()
+    {
+        return _navMeshAgent.speed / _roaningSpeed;
+    }
+
     private void CheckCurrentState()
     {
         float distanceToPlayer = Vector3.Distance(transform.position, Player.Instance.transform.position);
@@ -95,6 +115,14 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
+        if (_isAttackingEnemy)
+        {
+            if (distanceToPlayer <= _attackingDistance)
+            {
+                newState = State.Attacking;
+            }
+        }
+
         if (newState != _currentState)
         {
             if (newState == State.Chasing)
@@ -102,13 +130,48 @@ public class EnemyAI : MonoBehaviour
                 _navMeshAgent.ResetPath();
                 _navMeshAgent.speed = _chasingSpeed;
             }
+            
             else if (newState == State.Roaning)
             {
                 _roaningTimer = 0f;
                 _navMeshAgent.speed = _roaningSpeed;
             }
 
-                _currentState = newState;
+            else if (newState == State.Attacking)
+            {
+                _navMeshAgent.ResetPath();
+            }
+
+            _currentState = newState;
+        }
+    }
+
+    private void AttackingTarget()
+    {
+        if (Time.time > _nextAttackTime)
+        {
+            OnEnemyAttack?.Invoke(this, EventArgs.Empty);
+
+            _nextAttackTime = Time.time + _attackRate;
+        }
+
+    }
+
+    private void MovementDirectionHandler()
+    {
+        if (Time.time > _nextCheckDirectionTime)
+        {
+            if (IsRunning())
+            {
+                ChangeFacingDirection(_lastPosition, transform.position);
+            }
+            else if (_currentState == State.Attacking)
+            {
+                ChangeFacingDirection(transform.position, Player.Instance.transform.position);
+            }
+
+            _lastPosition = transform.position;
+            _nextCheckDirectionTime = Time.time + _checkDirectionDuration;
         }
     }
 
@@ -128,7 +191,6 @@ public class EnemyAI : MonoBehaviour
     {
         _startingPosition = transform.position;
         _roanPosition = GetRoaningPosition();
-        ChangeFacingDirection(_startingPosition, _roanPosition);
         _navMeshAgent.SetDestination(_roanPosition);
     }
 

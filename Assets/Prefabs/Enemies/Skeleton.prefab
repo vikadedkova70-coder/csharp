@@ -185,10 +185,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 815c83ade6ce99d45bcf2448c22ed58b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingState: 0
-  roaningDistanceMax: 7
-  roaningDistanceMin: 3
-  roaningTimerMax: 2
+  _startingState: 0
+  _roaningDistanceMax: 7
+  _roaningDistanceMin: 3
+  _roaningTimerMax: 2
+  _isChasingEnemy: 0
+  _isAttackingEnemy: 0
 --- !u!61 &7603889714912708777
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -259,6 +261,7 @@ GameObject:
   - component: {fileID: 1711833450518261169}
   - component: {fileID: 5357282076620791273}
   - component: {fileID: 4065735386816966226}
+  - component: {fileID: 7968512432522443959}
   m_Layer: 0
   m_Name: SkeletonVisual
   m_TagString: Untagged
@@ -359,3 +362,15 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7968512432522443959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3404490995807994707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 454314cad9af8e64c9fe8d38ea6cf409, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
