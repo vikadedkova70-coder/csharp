@@ -21,6 +21,7 @@ public class EnemyEntity : MonoBehaviour
     {
         _polygonCollider2D = GetComponent<PolygonCollider2D>();
         _boxCollider2D = GetComponent<BoxCollider2D>();
+        _enemyAI = GetComponent<EnemyAI>();
     }
 
     private void Start()
