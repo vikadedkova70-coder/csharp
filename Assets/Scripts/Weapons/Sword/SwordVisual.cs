@@ -25,4 +25,9 @@ public class NewMonoBehaviourScript : MonoBehaviour
     {
         sword.AttackColliderTurnOff();
     }
+
+    public void TriggerStartAttackAnimation()
+    {
+        sword.AttackColliderTurnOn();
+    }
 }

@@ -95,8 +95,9 @@ public class Player : MonoBehaviour
 
     private void DetectDeath()
     {
-        if (_currentHealth == 0 && _isAlive == false)
+        if (_currentHealth == 0)
         {
+            _isAlive = false;
             _canTakeDamage = false;
             _knockBack.StopKnockBackMovement();
             GameInput.Instance.DisableMovement();

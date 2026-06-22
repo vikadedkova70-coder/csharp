@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _damageAmount: 2
+  _polygonCollider2D: {fileID: 5908790060783290118}
 --- !u!1 &5163492537063738800
 GameObject:
   m_ObjectHideFlags: 0

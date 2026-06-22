@@ -10,11 +10,11 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float _roaningDistanceMin = 3f;
     [SerializeField] private float _roaningTimerMax = 2f;
 
-    [SerializeField] private bool _isChasingEnemy = false;
+    [SerializeField] private bool _isChasingEnemy = true;
     [SerializeField] private float _chasingDistance = 4f;
     [SerializeField] private float _chasingSpeedMultiplier = 2f;
 
-    [SerializeField] private bool _isAttackingEnemy = false;
+    [SerializeField] private bool _isAttackingEnemy = true;
     [SerializeField] private float _attackingDistance = 2f;
     [SerializeField] private float _attackRate = 2f;
     private float _nextAttackTime = 0f;
@@ -79,6 +79,7 @@ public class EnemyAI : MonoBehaviour
                     Roaning();
                     _roaningTimer = _roaningTimerMax;
                 }
+                CheckCurrentState();
                 break;
 
             case State.Attacking:
@@ -109,6 +110,18 @@ public class EnemyAI : MonoBehaviour
 
     private void CheckCurrentState()
     {
+        if (!Player.Instance.IsAlive())
+        {
+            if (_currentState != State.Roaning && _currentState != State.Death)
+            {
+                _roaningTimer = 0f;
+                _navMeshAgent.speed = _roaningSpeed;
+                _navMeshAgent.ResetPath();
+                _currentState = State.Roaning;
+            }
+            return;
+        }
+
         float distanceToPlayer = Vector3.Distance(transform.position, Player.Instance.transform.position);
 
         State newState = State.Roaning;

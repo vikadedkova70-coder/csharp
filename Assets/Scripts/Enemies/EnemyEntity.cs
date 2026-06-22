@@ -32,14 +32,19 @@ public class EnemyEntity : MonoBehaviour
     {
         if (collision.transform.TryGetComponent(out Player player))
         {
-            player.TakeDamage(transform, _enemySO.enemyDamageAmount);
+            if (player.IsAlive())
+            {
+                player.TakeDamage(transform, _enemySO.enemyDamageAmount);
+            }
         }
     }
 
     public void TakeDamage(int damage)
     {
+        Debug.Log("Враг получил урон: " + damage + ", здоровье было: " + _currentHealth);
         _currentHealth -= damage;
 
+        Debug.Log("Здоровье стало: " + _currentHealth);
         OnTakeHit?.Invoke(this, EventArgs.Empty);
 
         DetectDeath();

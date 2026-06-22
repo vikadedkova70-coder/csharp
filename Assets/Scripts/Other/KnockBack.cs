@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[RequireComponent (typeof(Camera))]
+[RequireComponent (typeof(Rigidbody2D))]
 public class KnockBack : MonoBehaviour
 {
     [SerializeField] private float _knockBackForce = 3f;

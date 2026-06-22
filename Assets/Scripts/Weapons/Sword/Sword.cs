@@ -5,9 +5,9 @@ public class Sword : MonoBehaviour
 {
     [SerializeField] private int _damageAmount = 2;
 
-    public event EventHandler OnSwordSwing;
+    [SerializeField] PolygonCollider2D _polygonCollider2D;
 
-    private PolygonCollider2D _polygonCollider2D;
+    public event EventHandler OnSwordSwing;
 
     private void Awake()
     {
@@ -21,15 +21,18 @@ public class Sword : MonoBehaviour
 
     public void Attack()
     {
-        AttackColliderTurnOffOn();
+        AttackColliderTurnOff();
+        AttackColliderTurnOn();
 
         OnSwordSwing?.Invoke(this, EventArgs.Empty);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log("Меч коснулся: " + collision.name);
         if (collision.transform.TryGetComponent(out EnemyEntity enemyEntity))
         {
+            Debug.Log("Найден враг! Наношу урон: " + _damageAmount);
             enemyEntity.TakeDamage(_damageAmount);
         }
     }
@@ -39,14 +42,8 @@ public class Sword : MonoBehaviour
         _polygonCollider2D.enabled = false;
     }
 
-    private void AttackColliderTurnOn()
+    public void AttackColliderTurnOn()
     {
         _polygonCollider2D.enabled = true;
-    }
-
-    private void AttackColliderTurnOffOn()
-    {
-        AttackColliderTurnOff();
-        AttackColliderTurnOn();
     }
 }
